@@ -6,8 +6,13 @@ describe Oystercard do
 
   it { is_expected.to respond_to :balance }
 
-  it 'should initialize with a balance of zero' do
-    expect(subject.balance).to eq 0
+  describe "#initialize" do
+    it 'should initialize with a balance of zero' do
+      expect(subject.balance).to eq 0
+    end
+    it "should initalize with an empty list of journey" do
+      expect(subject.log).to eq []
+    end
   end
 
   describe '#top_up' do
@@ -54,14 +59,14 @@ describe Oystercard do
       subject.touch_in station
     end
     it "should not be in_journey when touched out" do
-      subject.touch_out
+      subject.touch_out(station)
       expect(subject).not_to be_in_journey
     end
     it "should deduct the minimum fare from the journey" do
-      expect{subject.touch_out}.to change {subject.balance}.by -1
+      expect{subject.touch_out(station)}.to change {subject.balance}.by -1
     end
     it "should forget the entrystation" do
-      expect{subject.touch_out}.to change {subject.entry_station}.to eq nil
+      expect{subject.touch_out(station)}.to change {subject.entry_station}.to eq nil
     end
   end
   describe "#entry_station" do
@@ -73,5 +78,18 @@ describe Oystercard do
     it "should return the entry station" do
       expect(subject.entry_station).to eq(station)
     end
+  end
+
+  describe "#log" do
+    before do
+      subject.top_up(50)
+      subject.touch_in(station)
+      subject.touch_out(station)
+    end
+
+    it "should return a list of journey" do
+      expect(subject.log).to eq [{entry_station: station, exit_station: station}]
+    end
+
   end
 end

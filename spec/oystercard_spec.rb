@@ -3,6 +3,7 @@ require 'oystercard'
 describe Oystercard do
 
   let (:station) {double(:station)}
+  let (:journey) {double(:journey, :start => station, :end => station)}
 
   it { is_expected.to respond_to :balance }
 
@@ -83,12 +84,12 @@ describe Oystercard do
   describe "#log" do
     before do
       subject.top_up(50)
-      subject.touch_in(station)
+      subject.touch_in(station, journey)
       subject.touch_out(station)
     end
 
     it "should return a list of journey" do
-      expect(subject.log).to eq [{entry_station: station, exit_station: station}]
+      expect(subject.log).to eq [journey]
     end
 
   end

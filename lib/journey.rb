@@ -13,11 +13,11 @@ class Journey
   end
 
   def started?
-    (@entry_station && !@exit_station) ? true : false
+    @entry_station && !@exit_station 
   end
 
   def complete?
-    (@entry_station && @exit_station) ? true : false
+    !!(@entry_station && @exit_station)
   end
 
   def fare
